@@ -2,6 +2,15 @@ import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
 import type { TestCase } from '../types';
 
+function getImageDimensions(dataUrl: string): Promise<{ width: number; height: number }> {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => resolve({ width: img.naturalWidth, height: img.naturalHeight });
+    img.onerror = () => resolve({ width: 600, height: 400 });
+    img.src = dataUrl;
+  });
+}
+
 function setCellPreservingStyle(cell: ExcelJS.Cell, value: ExcelJS.CellValue) {
   const style = { ...cell.style };
   cell.value = value;
@@ -106,12 +115,16 @@ export const exportToExcel = async (testCases: TestCase[]) => {
             extension: imgData.dataUrl.includes('png') ? 'png' : 'jpeg',
           });
 
+          const maxWidth = 600;
+          const dims = await getImageDimensions(imgData.dataUrl);
+          const height = Math.round(maxWidth * (dims.height / dims.width));
+
           worksheet.addImage(imageId, {
             tl: { col: 0, row: currentRow - 1 },
-            ext: { width: 600, height: 400 }
+            ext: { width: maxWidth, height }
           });
 
-          currentRow += 22;
+          currentRow += Math.ceil(height / 20) + 2;
         }
       } catch (e) {
         console.error('Error adding image to excel:', e);
