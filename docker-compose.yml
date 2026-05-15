@@ -1,0 +1,9 @@
+﻿services:
+  pocketbase:
+    build: .
+    container_name: pb-test-doc
+    ports:
+      - "8091:8091"
+    volumes:
+      - ./pb_data:/pb_data
+    restart: unless-stopped
