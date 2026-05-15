@@ -6,9 +6,15 @@ import { v4 as uuidv4 } from 'uuid';
 import type { TestCase, TestStep, TestStatus, TestImage, ExcelTemplateConfig } from '../types';
 
 const idbStorage: StateStorage = {
-  getItem: async (name) => { return (await get(name)) || null; },
-  setItem: async (name, value) => { await set(name, value); },
-  removeItem: async (name) => { await del(name); },
+  getItem: async (name) => {
+    try { return (await get(name)) || null; } catch { return null; }
+  },
+  setItem: async (name, value) => {
+    try { await set(name, value); } catch {}
+  },
+  removeItem: async (name) => {
+    try { await del(name); } catch {}
+  },
 };
 
 interface TestStore {
@@ -96,7 +102,16 @@ export const useTestStore = create<TestStore>()(
     }),
     {
       name: 'test-doc-storage',
-      storage: createJSONStorage(() => idbStorage)
+      storage: createJSONStorage(() => idbStorage),
+      merge: (persisted: unknown, current: TestStore): TestStore => {
+        const p = (persisted as Partial<TestStore>) || {};
+        return {
+          ...current,
+          ...p,
+          testCases: Array.isArray(p.testCases) ? p.testCases : current.testCases,
+          templateConfig: p.templateConfig ?? current.templateConfig,
+        };
+      },
     }
   )
 );

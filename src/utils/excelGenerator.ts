@@ -29,7 +29,7 @@ function applyStatusColor(cell: ExcelJS.Cell, status: string) {
 
 export const exportToExcel = async (testCases: TestCase[]) => {
   try {
-    const response = await fetch('/template.xlsx');
+    const response = await fetch(`${import.meta.env.BASE_URL}template.xlsx`);
     if (!response.ok) {
       alert("Template template.xlsx não encontrado na pasta public. Verifique se o arquivo existe.");
       return;
