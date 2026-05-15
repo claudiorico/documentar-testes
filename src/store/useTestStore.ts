@@ -3,7 +3,7 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 import type { StateStorage } from 'zustand/middleware';
 import { get, set, del } from 'idb-keyval';
 import { v4 as uuidv4 } from 'uuid';
-import type { TestCase, TestStep, TestStatus, TestImage, ExcelTemplateConfig } from '../types';
+import type { TestCase, TestStep, TestImage, ExcelTemplateConfig } from '../types';
 
 const idbStorage: StateStorage = {
   getItem: async (name) => {

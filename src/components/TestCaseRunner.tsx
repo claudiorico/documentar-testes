@@ -1,7 +1,7 @@
-﻿import React, { useState, useCallback, useEffect } from 'react';
+﻿import React, { useCallback, useEffect } from 'react';
 import { useTestStore } from '../store/useTestStore';
 import type { TestStep, TestStatus } from '../types';
-import { CheckCircle, XCircle, AlertTriangle, MinusCircle, Upload, X, Plus } from 'lucide-react';
+import { Upload, X, Plus } from 'lucide-react';
 
 export const TestCaseRunner: React.FC<{ testCaseId: string }> = ({ testCaseId }) => {
   const testCase = useTestStore((state) => 
@@ -33,23 +33,13 @@ export const TestCaseRunner: React.FC<{ testCaseId: string }> = ({ testCaseId })
   }, [addStepImage, testCase.id]);
 
   useEffect(() => {
-    const pasteHandler = (e: globalThis.ClipboardEvent) => {
+    const pasteHandler = (_e: globalThis.ClipboardEvent) => {
       // Find the currently active step based on focus or hover, or just attach to the first step if nothing is selected.
       // For simplicity in this demo, if a user pastes while hovering over a paste area, we handle it there.
     };
     window.addEventListener('paste', pasteHandler);
     return () => window.removeEventListener('paste', pasteHandler);
   }, []);
-
-  const StatusIcon = ({ status }: { status: TestStatus }) => {
-    switch (status) {
-      case 'Aprovado': return <CheckCircle size={18} className="text-success" />;
-      case 'Reprovado': return <XCircle size={18} className="text-danger" />;
-      case 'Bloqueado': return <AlertTriangle size={18} className="text-warning" />;
-      case 'Ignorado': return <MinusCircle size={18} className="text-muted" />;
-      default: return <MinusCircle size={18} className="text-muted" />;
-    }
-  };
 
   const StatusSelector = ({ step }: { step: TestStep }) => {
     const statuses: TestStatus[] = ['Pendente', 'Aprovado', 'Reprovado', 'Bloqueado', 'Ignorado'];
