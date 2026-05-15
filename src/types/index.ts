@@ -3,6 +3,7 @@
 export interface TestImage {
   id: string;
   dataUrl: string;
+  caption?: string;
   timestamp: number;
 }
 

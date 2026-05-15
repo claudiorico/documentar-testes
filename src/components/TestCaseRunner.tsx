@@ -8,7 +8,7 @@ export const TestCaseRunner: React.FC<{ testCaseId: string }> = ({ testCaseId })
     state.testCases.find((tc) => tc.id === testCaseId)
   );
   
-  const { updateTestStep, addStepImage, removeStepImage, addTestStep, updateTestCase } = useTestStore();
+  const { updateTestStep, addStepImage, updateStepImage, removeStepImage, addTestStep, updateTestCase } = useTestStore();
 
   if (!testCase) return null;
 
@@ -144,7 +144,14 @@ export const TestCaseRunner: React.FC<{ testCaseId: string }> = ({ testCaseId })
               {step.images.map((img) => (
                 <div key={img.id} className="image-preview">
                   <img src={img.dataUrl} alt="Evidência" />
-                  <button 
+                  <input
+                    type="text"
+                    value={img.caption || ''}
+                    onChange={(e) => updateStepImage(testCase.id, step.id, img.id, { caption: e.target.value })}
+                    placeholder="Descrição da evidência..."
+                    style={{ marginTop: '0.5rem', fontSize: '0.8rem', width: '100%' }}
+                  />
+                  <button
                     className="delete-btn"
                     onClick={() => removeStepImage(testCase.id, step.id, img.id)}
                   >

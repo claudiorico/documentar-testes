@@ -22,6 +22,7 @@ interface TestStore {
   updateTestStep: (testCaseId: string, stepId: string, updates: Partial<TestStep>) => void;
   deleteTestStep: (testCaseId: string, stepId: string) => void;
   addStepImage: (testCaseId: string, stepId: string, dataUrl: string) => void;
+  updateStepImage: (testCaseId: string, stepId: string, imageId: string, updates: Partial<TestImage>) => void;
   removeStepImage: (testCaseId: string, stepId: string, imageId: string) => void;
   importTestCases: (cases: TestCase[]) => void;
   clearAll: () => void;
@@ -68,6 +69,16 @@ export const useTestStore = create<TestStore>()(
               return s;
             }) };
             return tc;
+          })
+        })),
+      updateStepImage: (testCaseId, stepId, imageId, updates) =>
+        set((state) => ({
+          testCases: state.testCases.map((tc) => {
+            if (tc.id !== testCaseId) return tc;
+            return { ...tc, steps: tc.steps.map((s) => {
+              if (s.id !== stepId) return s;
+              return { ...s, images: s.images.map((img) => img.id === imageId ? { ...img, ...updates } : img) };
+            }) };
           })
         })),
       removeStepImage: (testCaseId, stepId, imageId) =>

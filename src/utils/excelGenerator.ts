@@ -40,7 +40,7 @@ export const exportToExcel = async (testCases: TestCase[]) => {
     let currentRow = 2;
     let testConditionNumber = 1;
 
-    const imagesToDraw: Array<{ label: string, dataUrl: string }> = [];
+    const imagesToDraw: Array<{ label: string, dataUrl: string, caption?: string }> = [];
 
     for (const tc of testCases) {
       let allImages: any[] = [];
@@ -54,7 +54,7 @@ export const exportToExcel = async (testCases: TestCase[]) => {
         for (let i = 0; i < allImages.length; i++) {
           const evLabel = testConditionNumber + "." + i;
           evRefs.push(evLabel);
-          imagesToDraw.push({ label: evLabel, dataUrl: allImages[i].dataUrl });
+          imagesToDraw.push({ label: evLabel, dataUrl: allImages[i].dataUrl, caption: allImages[i].caption });
         }
         evidenceStr = evRefs.join(' / ');
       }
@@ -92,6 +92,11 @@ export const exportToExcel = async (testCases: TestCase[]) => {
       worksheet.getRow(currentRow).getCell(1).value = imgData.label + " - Evidência";
       worksheet.getRow(currentRow).getCell(1).font = { bold: true };
       currentRow++;
+
+      if (imgData.caption) {
+        worksheet.getRow(currentRow).getCell(1).value = imgData.caption;
+        currentRow++;
+      }
 
       try {
         const base64Data = imgData.dataUrl.split(';base64,').pop();
