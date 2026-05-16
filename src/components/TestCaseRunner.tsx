@@ -42,7 +42,7 @@ export const TestCaseRunner: React.FC<{ testCaseId: string }> = ({ testCaseId })
   }, []);
 
   const StatusSelector = ({ step }: { step: TestStep }) => {
-    const statuses: TestStatus[] = ['Pendente', 'Aprovado', 'Reprovado', 'Bloqueado', 'Ignorado'];
+    const statuses: TestStatus[] = ['Aprovado', 'Reprovado'];
     return (
       <div className="flex gap-2">
         {statuses.map((s) => (

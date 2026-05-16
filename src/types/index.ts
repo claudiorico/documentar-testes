@@ -1,4 +1,4 @@
-﻿export type TestStatus = 'Pendente' | 'Aprovado' | 'Reprovado' | 'Bloqueado' | 'Ignorado';
+﻿export type TestStatus = 'Aprovado' | 'Reprovado';
 
 export interface TestImage {
   id: string;

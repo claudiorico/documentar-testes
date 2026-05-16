@@ -49,7 +49,7 @@ export const useTestStore = create<TestStore>()(
       addTestStep: (testCaseId, step) =>
         set((state) => ({
           testCases: state.testCases.map((tc) => {
-            if (tc.id === testCaseId) return { ...tc, steps: [...tc.steps, { ...step, id: uuidv4(), images: [], status: 'Pendente' }] };
+            if (tc.id === testCaseId) return { ...tc, steps: [...tc.steps, { ...step, id: uuidv4(), images: [], status: 'Aprovado' }] };
             return tc;
           })
         })),

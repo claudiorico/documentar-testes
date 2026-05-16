@@ -80,7 +80,7 @@ export const exportToExcel = async (testCases: TestCase[]) => {
       const desc = tc.title + (tc.steps.length > 1 ? ' - Vários passos' : (' - ' + tc.steps[0].description));
       const expected = tc.steps.map(s => s.expectedResult).join('\n');
 
-      let status = tc.steps[0]?.status || 'Pendente';
+      let status = tc.steps[0]?.status || 'Aprovado';
       const isReprovado = tc.steps.some(s => s.status === 'Reprovado');
       if (isReprovado) status = 'Reprovado';
       const actual = tc.steps.map(s => s.actualResult).filter(Boolean).join('\n');

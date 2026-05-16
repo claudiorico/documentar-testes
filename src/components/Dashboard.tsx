@@ -20,7 +20,7 @@ export const Dashboard: React.FC = () => {
           id: uuidv4(),
           description: 'Passo 1',
           expectedResult: 'Resultado Esperado',
-          status: 'Pendente',
+          status: 'Aprovado',
           images: []
         }
       ]
@@ -77,7 +77,7 @@ export const Dashboard: React.FC = () => {
                   id: uuidv4(),
                   description: 'Passo Único',
                   expectedResult: expected || 'N/A',
-                  status: 'Pendente',
+                  status: 'Aprovado',
                   images: []
                 }
               ]
