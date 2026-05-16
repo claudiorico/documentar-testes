@@ -17,6 +17,13 @@ function setCellPreservingStyle(cell: ExcelJS.Cell, value: ExcelJS.CellValue) {
   cell.style = style;
 }
 
+function copyRowStyle(sourceRow: ExcelJS.Row, targetRow: ExcelJS.Row) {
+  for (let col = 1; col <= 7; col++) {
+    targetRow.getCell(col).style = JSON.parse(JSON.stringify(sourceRow.getCell(col).style));
+  }
+  if (sourceRow.height) targetRow.height = sourceRow.height;
+}
+
 function applyStatusColor(cell: ExcelJS.Cell, status: string) {
   if (status === 'Aprovado') {
     cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFC6EFCE' } };
@@ -51,6 +58,8 @@ export const exportToExcel = async (testCases: TestCase[]) => {
 
     const imagesToDraw: Array<{ label: string, dataUrl: string, caption?: string }> = [];
 
+    const templateRow = worksheet.getRow(2);
+
     for (const tc of testCases) {
       let allImages: any[] = [];
       for (const step of tc.steps) {
@@ -77,6 +86,7 @@ export const exportToExcel = async (testCases: TestCase[]) => {
       const actual = tc.steps.map(s => s.actualResult).filter(Boolean).join('\n');
 
       const row = worksheet.getRow(currentRow);
+      if (currentRow > 2) copyRowStyle(templateRow, row);
       setCellPreservingStyle(row.getCell(1), testConditionNumber);
       setCellPreservingStyle(row.getCell(2), desc);
       setCellPreservingStyle(row.getCell(3), tc.inputData || '');
@@ -91,7 +101,7 @@ export const exportToExcel = async (testCases: TestCase[]) => {
       currentRow++;
     }
 
-    currentRow += 2;
+    currentRow += 1;
     const headerRow = worksheet.getRow(currentRow);
     headerRow.getCell(1).value = "Evidências das condições de teste";
     headerRow.getCell(1).font = { bold: true, size: 14 };
