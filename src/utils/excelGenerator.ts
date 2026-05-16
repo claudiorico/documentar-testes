@@ -12,7 +12,7 @@ function getImageDimensions(dataUrl: string): Promise<{ width: number; height: n
 }
 
 function setCellPreservingStyle(cell: ExcelJS.Cell, value: ExcelJS.CellValue) {
-  const style = { ...cell.style };
+  const style = JSON.parse(JSON.stringify(cell.style));
   cell.value = value;
   cell.style = style;
 }
@@ -21,7 +21,6 @@ function copyRowStyle(sourceRow: ExcelJS.Row, targetRow: ExcelJS.Row) {
   for (let col = 1; col <= 7; col++) {
     targetRow.getCell(col).style = JSON.parse(JSON.stringify(sourceRow.getCell(col).style));
   }
-  if (sourceRow.height) targetRow.height = sourceRow.height;
 }
 
 function applyStatusColor(cell: ExcelJS.Cell, status: string) {
@@ -95,6 +94,14 @@ export const exportToExcel = async (testCases: TestCase[]) => {
       applyStatusColor(row.getCell(5), status);
       setCellPreservingStyle(row.getCell(6), evidenceStr);
       setCellPreservingStyle(row.getCell(7), actual);
+
+      const maxLines = Math.max(
+        expected.split('\n').length,
+        (actual || '').split('\n').length,
+        1
+      );
+      row.height = Math.max(templateRow.height || 30, maxLines * 18);
+
       row.commit();
 
       testConditionNumber++;
@@ -102,13 +109,17 @@ export const exportToExcel = async (testCases: TestCase[]) => {
     }
 
     currentRow += 1;
-    const headerRow = worksheet.getRow(currentRow);
-    headerRow.getCell(1).value = "Evidências das condições de teste";
-    headerRow.getCell(1).font = { bold: true, size: 14 };
+    try { worksheet.mergeCells(currentRow, 1, currentRow, 6); } catch {}
+    const headerCell = worksheet.getRow(currentRow).getCell(1);
+    headerCell.value = "Evidências das condições de teste";
+    headerCell.font = { bold: true, size: 11, color: { argb: 'FFFFFFFF' } };
+    headerCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF4472C4' } };
+    headerCell.alignment = { vertical: 'middle', horizontal: 'left' };
+    worksheet.getRow(currentRow).height = 22;
     currentRow += 2;
 
     for (const imgData of imagesToDraw) {
-      worksheet.getRow(currentRow).getCell(1).value = imgData.label + " - Evidência";
+      worksheet.getRow(currentRow).getCell(1).value = imgData.label;
       worksheet.getRow(currentRow).getCell(1).font = { bold: true };
       currentRow++;
 
