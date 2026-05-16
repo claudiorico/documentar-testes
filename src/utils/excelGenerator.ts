@@ -113,7 +113,7 @@ export const exportToExcel = async (testCases: TestCase[]) => {
     const headerCell = worksheet.getRow(currentRow).getCell(1);
     headerCell.value = "Evidências das condições de teste";
     headerCell.font = { bold: true, size: 11, color: { argb: 'FFFFFFFF' } };
-    headerCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF4472C4' } };
+    headerCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF0000CC' } };
     headerCell.alignment = { vertical: 'middle', horizontal: 'left' };
     worksheet.getRow(currentRow).height = 22;
     currentRow += 2;
